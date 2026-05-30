@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { ProductMysqlRepository } from '@/repositories/product.mysql.repository'
+import { makeProductRepository } from '@/repositories/product.repository.factory'
 import { ProductService } from '@/services/product.service'
 import { errorResponse, successResponse } from '@/utils/api-response'
 
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       )
     }
 
-    const repository = new ProductMysqlRepository()
+    const repository = makeProductRepository()
     const productService = new ProductService(repository)
 
     const products = await productService.searchProducts({
