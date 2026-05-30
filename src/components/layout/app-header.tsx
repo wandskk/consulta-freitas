@@ -26,21 +26,12 @@ export function AppHeader() {
                 </Link>
 
                 <nav className="flex items-center gap-2">
-                    <Link
-                        href="/products"
-                        className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${isProductsPage
-                                ? 'bg-zinc-950 text-white'
-                                : 'text-zinc-600 hover:bg-zinc-100'
-                            }`}
-                    >
-                        Produtos
-                    </Link>
 
                     <Link
                         href="/cart"
                         className={`relative rounded-xl px-3 py-2 text-sm font-semibold transition ${isCartPage
-                                ? 'bg-zinc-950 text-white'
-                                : 'text-zinc-600 hover:bg-zinc-100'
+                            ? 'bg-zinc-950 text-white'
+                            : 'text-zinc-600 hover:bg-zinc-100'
                             }`}
                     >
                         Carrinho
