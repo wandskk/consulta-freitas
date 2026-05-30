@@ -18,7 +18,12 @@ export type ProductDatabaseRow = {
   localizacao: string | null
 }
 
-export type ProductsSearchParams = {
+export type ProductSearchParams = {
   search: string
   limit?: number
+}
+
+export type ProductSearchResponse = {
+  total: number
+  products: Product[]
 }

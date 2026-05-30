@@ -1,11 +1,11 @@
 import { PRODUCT_SEARCH_LIMIT } from '@/constants/product.constants'
 import type { ProductRepository } from '@/repositories/product.repository'
-import type { Product, ProductsSearchParams } from '@/types/product'
+import type { Product, ProductSearchParams } from '@/types/product'
 
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
 
-  async searchProducts(params: ProductsSearchParams): Promise<Product[]> {
+  async searchProducts(params: ProductSearchParams): Promise<Product[]> {
     const search = params.search.trim()
 
     if (!search) {
