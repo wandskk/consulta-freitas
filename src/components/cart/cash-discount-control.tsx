@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import { useCart } from '@/contexts/cart-context'
 
 type CashDiscountControlProps = {
@@ -10,8 +12,15 @@ export function CashDiscountControl({
   variant = 'default',
 }: CashDiscountControlProps) {
   const { cashDiscountPercentage, updateCashDiscountPercentage } = useCart()
+  const [discountInputValue, setDiscountInputValue] = useState(
+    String(cashDiscountPercentage)
+  )
+  const [isEditingDiscount, setIsEditingDiscount] = useState(false)
 
   const isCompact = variant === 'compact'
+  const visibleDiscountValue = isEditingDiscount
+    ? discountInputValue
+    : String(cashDiscountPercentage)
 
   return (
     <div
@@ -38,10 +47,29 @@ export function CashDiscountControl({
             type="number"
             min={0}
             max={100}
-            value={cashDiscountPercentage}
-            onChange={(event) =>
-              updateCashDiscountPercentage(Number(event.target.value))
-            }
+            value={visibleDiscountValue}
+            onFocus={() => {
+              setIsEditingDiscount(true)
+              setDiscountInputValue(String(cashDiscountPercentage))
+            }}
+            onChange={(event) => {
+              const nextValue = event.target.value
+
+              setDiscountInputValue(nextValue)
+
+              if (nextValue === '') {
+                return
+              }
+
+              updateCashDiscountPercentage(Number(nextValue))
+            }}
+            onBlur={() => {
+              setIsEditingDiscount(false)
+
+              if (discountInputValue === '') {
+                setDiscountInputValue(String(cashDiscountPercentage))
+              }
+            }}
             className="h-11 w-24 rounded-xl border border-zinc-300 px-3 text-center text-sm font-semibold outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
           />
 

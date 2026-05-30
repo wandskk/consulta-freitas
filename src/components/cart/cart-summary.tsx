@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import { useCart } from '@/contexts/cart-context'
 import { formatCurrency } from '@/helpers/currency.helper'
 
@@ -10,6 +12,13 @@ export function CartSummary() {
     updateCashDiscountPercentage,
     clearCart,
   } = useCart()
+  const [discountInputValue, setDiscountInputValue] = useState(
+    String(cashDiscountPercentage)
+  )
+  const [isEditingDiscount, setIsEditingDiscount] = useState(false)
+  const visibleDiscountValue = isEditingDiscount
+    ? discountInputValue
+    : String(cashDiscountPercentage)
 
   return (
     <aside className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm lg:sticky lg:top-6">
@@ -36,10 +45,29 @@ export function CartSummary() {
             type="number"
             min={0}
             max={100}
-            value={cashDiscountPercentage}
-            onChange={(event) =>
-              updateCashDiscountPercentage(Number(event.target.value))
-            }
+            value={visibleDiscountValue}
+            onFocus={() => {
+              setIsEditingDiscount(true)
+              setDiscountInputValue(String(cashDiscountPercentage))
+            }}
+            onChange={(event) => {
+              const nextValue = event.target.value
+
+              setDiscountInputValue(nextValue)
+
+              if (nextValue === '') {
+                return
+              }
+
+              updateCashDiscountPercentage(Number(nextValue))
+            }}
+            onBlur={() => {
+              setIsEditingDiscount(false)
+
+              if (discountInputValue === '') {
+                setDiscountInputValue(String(cashDiscountPercentage))
+              }
+            }}
             className="h-11 w-full rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
           />
 
