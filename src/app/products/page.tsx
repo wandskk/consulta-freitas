@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import { AppShell } from '@/components/layout/app-shell'
 import { ProductList } from '@/components/products/product-list'
 import { ProductSearch } from '@/components/products/product-search'
 import { useDebounce } from '@/hooks/use-debounce'
@@ -36,22 +37,25 @@ export default function ProductsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 px-4 py-8">
-      <div className="mx-auto max-w-5xl space-y-6">
-        <header className="rounded-3xl bg-zinc-950 p-6 text-white shadow-sm">
-          <span className="text-sm font-medium text-zinc-300">
-            Consulta Freitas
-          </span>
+    <AppShell>
+      <div className="space-y-6">
+        <section className="rounded-3xl bg-zinc-950 p-6 text-white shadow-sm sm:p-8">
+          <div className="max-w-3xl">
+            <span className="text-sm font-medium text-zinc-300">
+              Consulta interna
+            </span>
 
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">
-            Consulta de produtos
-          </h1>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              Encontre produtos com rapidez
+            </h2>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">
-            Pesquise produtos por nome, código interno ou código de barras.
-            Os dados exibidos são baseados na tabela de preço Preco1.
-          </p>
-        </header>
+            <p className="mt-3 text-sm leading-6 text-zinc-300 sm:text-base">
+              Pesquise por nome, código interno ou código de barras. A aplicação
+              foi preparada para usar dados fictícios em MySQL durante o
+              desenvolvimento e SQL Server na base real do ETrade.
+            </p>
+          </div>
+        </section>
 
         <ProductSearch
           value={search}
@@ -68,6 +72,6 @@ export default function ProductsPage() {
           hasSearched={hasSearched}
         />
       </div>
-    </main>
+    </AppShell>
   )
 }
