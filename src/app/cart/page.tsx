@@ -9,58 +9,41 @@ import { AppShell } from '@/components/layout/app-shell'
 import { useCart } from '@/contexts/cart-context'
 
 export default function CartPage() {
-  const { items, totals } = useCart()
+    const { items, totals } = useCart()
 
-  return (
-    <AppShell>
-      <div className="space-y-6">
-        <div>
-          <Link
-            href="/products"
-            className="inline-flex items-center text-sm font-semibold text-zinc-600 transition hover:text-zinc-950"
-          >
-            ← Voltar para produtos
-          </Link>
-        </div>
+    return (
+        <AppShell>
+            <div className="space-y-6">
+                <div>
+                    <Link
+                        href="/products"
+                        className="inline-flex items-center text-sm font-semibold text-zinc-600 transition hover:text-zinc-950"
+                    >
+                        ← Voltar para produtos
+                    </Link>
+                </div>
 
-        <section className="rounded-3xl bg-zinc-950 p-6 text-white shadow-sm sm:p-8">
-          <div className="max-w-3xl">
-            <span className="text-sm font-medium text-zinc-300">
-              Carrinho de consulta
-            </span>
+                {totals.totalItems === 0 ? (
+                    <CartEmptyState />
+                ) : (
+                    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+                        <section className="space-y-4">
+                            <div className="rounded-2xl border border-zinc-200 bg-white p-4 text-sm text-zinc-600 shadow-sm">
+                                <strong className="text-zinc-950">
+                                    {totals.totalItems} item{totals.totalItems === 1 ? '' : 's'}
+                                </strong>{' '}
+                                no carrinho. Os valores são atualizados automaticamente.
+                            </div>
 
-            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-              Produtos selecionados
-            </h2>
+                            {items.map((item) => (
+                                <CartItemCard key={item.product.id} item={item} />
+                            ))}
+                        </section>
 
-            <p className="mt-3 text-sm leading-6 text-zinc-300 sm:text-base">
-              Organize produtos para conferência de preço no cartão e à vista.
-              Esta tela não finaliza compra.
-            </p>
-          </div>
-        </section>
-
-        {totals.totalItems === 0 ? (
-          <CartEmptyState />
-        ) : (
-          <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-            <section className="space-y-4">
-              <div className="rounded-2xl border border-zinc-200 bg-white p-4 text-sm text-zinc-600 shadow-sm">
-                <strong className="text-zinc-950">
-                  {totals.totalItems} item{totals.totalItems === 1 ? '' : 's'}
-                </strong>{' '}
-                no carrinho. Os valores são atualizados automaticamente.
-              </div>
-
-              {items.map((item) => (
-                <CartItemCard key={item.product.id} item={item} />
-              ))}
-            </section>
-
-            <CartSummary />
-          </div>
-        )}
-      </div>
-    </AppShell>
-  )
+                        <CartSummary />
+                    </div>
+                )}
+            </div>
+        </AppShell>
+    )
 }
