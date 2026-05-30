@@ -1,5 +1,10 @@
-import type { Product } from "@/types/product";
+import type { Product } from '@/types/product'
+
+export type FindProductsParams = {
+  search: string
+  limit?: number
+}
 
 export interface ProductRepository {
-  findAll(): Promise<Product[]>;
+  findMany(params: FindProductsParams): Promise<Product[]>
 }

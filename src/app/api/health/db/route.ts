@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server'
 
-import { getMysqlPool } from '@/lib/mysql'
+import { ProductMysqlRepository } from '@/repositories/product.mysql.repository'
 
 export async function GET() {
   try {
-    const pool = getMysqlPool()
+    const repository = new ProductMysqlRepository()
 
-    const [rows] = await pool.query('SELECT 1 AS status')
+    const products = await repository.findMany({
+      search: 'cimento',
+      limit: 10,
+    })
 
     return NextResponse.json({
       ok: true,
-      database: 'mysql',
-      result: rows,
+      total: products.length,
+      products,
     })
   } catch (error) {
     console.error(error)
@@ -19,7 +22,7 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        message: 'Erro ao conectar com o banco de dados',
+        message: 'Erro ao buscar produtos',
       },
       { status: 500 }
     )
