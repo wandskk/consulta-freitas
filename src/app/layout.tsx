@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
 import { PwaRegister } from '@/components/pwa/pwa-register'
+import { AppProviders } from '@/components/providers/app-providers'
 
 import './globals.css'
 
@@ -49,7 +50,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <PwaRegister />
-        {children}
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   )
