@@ -1,30 +1,25 @@
 import { NextResponse } from 'next/server'
 
-import { ProductMysqlRepository } from '@/repositories/product.mysql.repository'
-import { ProductService } from '@/services/product.service'
+import { getMysqlPool } from '@/lib/mysql'
 import { errorResponse, successResponse } from '@/utils/api-response'
 
 export async function GET() {
   try {
-    const repository = new ProductMysqlRepository()
-    const productService = new ProductService(repository)
+    const pool = getMysqlPool()
 
-    const products = await productService.searchProducts({
-      search: 'broca',
-      limit: 10,
-    })
+    const [rows] = await pool.query('SELECT 1 AS status')
 
     return NextResponse.json(
       successResponse({
-        total: products.length,
-        products,
+        database: 'mysql',
+        result: rows,
       })
     )
   } catch (error) {
     console.error(error)
 
     return NextResponse.json(
-      errorResponse('Erro ao buscar produtos', error),
+      errorResponse('Erro ao conectar com o banco de dados.'),
       { status: 500 }
     )
   }
