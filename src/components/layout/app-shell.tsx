@@ -6,20 +6,21 @@ import { AppFooter } from './app-footer'
 import { AppHeader } from './app-header'
 
 type AppShellProps = {
-  children: ReactNode
+    children: ReactNode
 }
 
 export function AppShell({ children }: AppShellProps) {
-  return (
-    <div className="flex min-h-screen flex-col bg-zinc-50">
-      <AppHeader />
+    return (
+        <div className="flex min-h-screen flex-col bg-zinc-50">
+            <AppHeader />
 
-      <main className="flex-1 px-4 pb-32 pt-8 sm:pb-28">
-        <div className="mx-auto max-w-6xl">{children}</div>
-      </main>
+            <main className="flex-1 px-4 py-6 pb-32 sm:py-8">
+                <div className="mx-auto max-w-6xl">{children}</div>
+            </main>
 
-      <AppFooter />
-      <BottomCartBar />
-    </div>
-  )
+            <AppFooter />
+
+            <BottomCartBar />
+        </div>
+    )
 }

@@ -34,14 +34,20 @@ export function BottomCartBar() {
             <span className="text-zinc-400">•</span>
 
             <span className="font-semibold text-zinc-950">
-              {formatCurrency(totals.subtotalCard)}
+              Cartão {formatCurrency(totals.subtotalCard)}
+            </span>
+
+            <span className="hidden text-zinc-400 sm:inline">•</span>
+
+            <span className="hidden font-semibold text-green-700 sm:inline">
+              À vista {formatCurrency(totals.subtotalCash)}
             </span>
           </div>
         </div>
 
         <Link
           href="/cart"
-          className="rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 active:scale-[0.98]"
+          className="shrink-0 rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 active:scale-[0.98]"
         >
           Ver carrinho
         </Link>
