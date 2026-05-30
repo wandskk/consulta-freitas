@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 
+import { CartEmptyState } from '@/components/cart/cart-empty-state'
 import { CartItemCard } from '@/components/cart/cart-item-card'
 import { CartSummary } from '@/components/cart/cart-summary'
 import { AppShell } from '@/components/layout/app-shell'
@@ -13,6 +14,15 @@ export default function CartPage() {
   return (
     <AppShell>
       <div className="space-y-6">
+        <div>
+          <Link
+            href="/products"
+            className="inline-flex items-center text-sm font-semibold text-zinc-600 transition hover:text-zinc-950"
+          >
+            ← Voltar para produtos
+          </Link>
+        </div>
+
         <section className="rounded-3xl bg-zinc-950 p-6 text-white shadow-sm sm:p-8">
           <div className="max-w-3xl">
             <span className="text-sm font-medium text-zinc-300">
@@ -31,25 +41,17 @@ export default function CartPage() {
         </section>
 
         {totals.totalItems === 0 ? (
-          <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-center shadow-sm">
-            <h3 className="text-lg font-bold text-zinc-950">
-              Seu carrinho está vazio
-            </h3>
-
-            <p className="mt-2 text-sm text-zinc-500">
-              Pesquise produtos e adicione itens para simular os valores.
-            </p>
-
-            <Link
-              href="/products"
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-zinc-950 px-5 text-sm font-semibold text-white transition hover:bg-zinc-800"
-            >
-              Buscar produtos
-            </Link>
-          </div>
+          <CartEmptyState />
         ) : (
           <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
             <section className="space-y-4">
+              <div className="rounded-2xl border border-zinc-200 bg-white p-4 text-sm text-zinc-600 shadow-sm">
+                <strong className="text-zinc-950">
+                  {totals.totalItems} item{totals.totalItems === 1 ? '' : 's'}
+                </strong>{' '}
+                no carrinho. Os valores são atualizados automaticamente.
+              </div>
+
               {items.map((item) => (
                 <CartItemCard key={item.product.id} item={item} />
               ))}
