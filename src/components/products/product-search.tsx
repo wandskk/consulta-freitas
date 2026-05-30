@@ -1,35 +1,20 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
-
 type ProductSearchProps = {
+  value: string
   isLoading: boolean
-  onSearch: (search: string) => void
+  onChange: (value: string) => void
   onClear: () => void
 }
 
 export function ProductSearch({
+  value,
   isLoading,
-  onSearch,
+  onChange,
   onClear,
 }: ProductSearchProps) {
-  const [search, setSearch] = useState('')
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    onSearch(search)
-  }
-
-  function handleClear() {
-    setSearch('')
-    onClear()
-  }
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm"
-    >
+    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
       <label
         htmlFor="product-search"
         className="mb-2 block text-sm font-medium text-zinc-700"
@@ -38,31 +23,35 @@ export function ProductSearch({
       </label>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <input
-          id="product-search"
-          type="text"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Digite nome, código ou código de barras..."
-          className="h-12 flex-1 rounded-xl border border-zinc-300 px-4 text-sm outline-none transition focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
-        />
+        <div className="relative flex-1">
+          <input
+            id="product-search"
+            type="text"
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            placeholder="Digite nome, código ou código de barras..."
+            className="h-12 w-full rounded-xl border border-zinc-300 px-4 pr-10 text-sm outline-none transition focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
+            autoComplete="off"
+          />
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="h-12 rounded-xl bg-zinc-900 px-6 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isLoading ? 'Buscando...' : 'Buscar'}
-        </button>
+          {isLoading && (
+            <span className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900" />
+          )}
+        </div>
 
         <button
           type="button"
-          onClick={handleClear}
-          className="h-12 rounded-xl border border-zinc-300 px-6 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
+          onClick={onClear}
+          disabled={!value}
+          className="h-12 rounded-xl border border-zinc-300 px-6 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Limpar
         </button>
       </div>
-    </form>
+
+      <p className="mt-3 text-xs text-zinc-500">
+        A busca acontece automaticamente após você parar de digitar.
+      </p>
+    </div>
   )
 }

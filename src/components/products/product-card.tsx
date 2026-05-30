@@ -1,3 +1,8 @@
+'use client'
+
+import { useState } from 'react'
+
+import { copyToClipboard } from '@/helpers/clipboard.helper'
 import { formatCurrency } from '@/helpers/currency.helper'
 import { getStockStatus } from '@/helpers/stock.helper'
 import type { Product } from '@/types/product'
@@ -6,46 +11,89 @@ type ProductCardProps = {
   product: Product
 }
 
+function formatStock(value: number): string {
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 3,
+  }).format(value)
+}
+
 export function ProductCard({ product }: ProductCardProps) {
+  const [copied, setCopied] = useState(false)
   const stockStatus = getStockStatus(product.estoque)
 
-  return (
-    <article className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:shadow-md">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-            Código {product.codigo}
-          </span>
+  async function handleCopyCode() {
+    const success = await copyToClipboard(product.codigo)
 
-          <h2 className="mt-1 text-base font-semibold text-zinc-950">
+    if (!success) {
+      return
+    }
+
+    setCopied(true)
+
+    setTimeout(() => {
+      setCopied(false)
+    }, 1500)
+  }
+
+  return (
+    <article className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-700">
+              Código {product.codigo}
+            </span>
+
+            <button
+              type="button"
+              onClick={handleCopyCode}
+              className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100"
+            >
+              {copied ? 'Copiado!' : 'Copiar código'}
+            </button>
+          </div>
+
+          <h2 className="mt-3 text-base font-semibold leading-6 text-zinc-950 sm:text-lg">
             {product.nome}
           </h2>
 
-          <div className="mt-2 flex flex-wrap gap-2 text-xs text-zinc-500">
+          <div className="mt-2 flex flex-col gap-1 text-xs text-zinc-500 sm:flex-row sm:flex-wrap sm:gap-2">
             <span>EAN: {product.codigoEan || 'Não informado'}</span>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <span>Localização: {product.localizacao || 'Não informada'}</span>
           </div>
         </div>
 
-        <div className="text-left sm:text-right">
-          <strong className="block text-xl font-bold text-zinc-950">
+        <div className="shrink-0 rounded-xl bg-zinc-50 p-3 text-left sm:min-w-36 sm:text-right">
+          <span className="text-xs text-zinc-500">Preço</span>
+
+          <strong className="mt-1 block text-2xl font-bold text-zinc-950">
             {formatCurrency(product.preco)}
           </strong>
-
-          <span
-            className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-medium ${stockStatus.className}`}
-          >
-            {stockStatus.label}
-          </span>
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl bg-zinc-50 p-3">
-        <span className="text-xs text-zinc-500">Estoque atual</span>
-        <p className="text-lg font-semibold text-zinc-900">
-          {product.estoque}
-        </p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-xl bg-zinc-50 p-3">
+          <span className="text-xs text-zinc-500">Estoque atual</span>
+
+          <p className="mt-1 text-lg font-semibold text-zinc-900">
+            {formatStock(product.estoque)}
+          </p>
+        </div>
+
+        <div className="rounded-xl bg-zinc-50 p-3">
+          <span className="text-xs text-zinc-500">Situação</span>
+
+          <div>
+            <span
+              className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-medium ${stockStatus.className}`}
+            >
+              {stockStatus.label}
+            </span>
+          </div>
+        </div>
       </div>
     </article>
   )
