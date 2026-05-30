@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     title: 'Consulta Freitas',
   },
   icons: {
-    icon: '/icons/icon.svg',
-    apple: '/icons/icon.svg',
+    icon: '/icons/icon-192.png',
+    apple: '/icons/icon-192.png',
   },
 }
 
