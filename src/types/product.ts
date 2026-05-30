@@ -18,6 +18,7 @@ export type ProductDatabaseRow = {
   localizacao: string | null
 }
 
-export type ProductSearchParams = {
+export type ProductsSearchParams = {
   search: string
+  limit?: number
 }
