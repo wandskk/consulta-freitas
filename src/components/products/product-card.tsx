@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import { useCart } from '@/contexts/cart-context'
+import { calculateCashPrice } from '@/helpers/cart.helper'
 import { copyToClipboard } from '@/helpers/clipboard.helper'
 import { formatCurrency } from '@/helpers/currency.helper'
 import { getStockStatus } from '@/helpers/stock.helper'
@@ -20,7 +22,18 @@ function formatStock(value: number): string {
 
 export function ProductCard({ product }: ProductCardProps) {
   const [copied, setCopied] = useState(false)
+
+  const {
+    addProduct,
+    cashDiscountPercentage,
+    isInCart,
+    getQuantity,
+  } = useCart()
+
   const stockStatus = getStockStatus(product.estoque)
+  const cashPrice = calculateCashPrice(product.preco, cashDiscountPercentage)
+  const productIsInCart = isInCart(product.id)
+  const quantityInCart = getQuantity(product.id)
 
   async function handleCopyCode() {
     const success = await copyToClipboard(product.codigo)
@@ -34,6 +47,10 @@ export function ProductCard({ product }: ProductCardProps) {
     setTimeout(() => {
       setCopied(false)
     }, 1500)
+  }
+
+  function handleAddToCart() {
+    addProduct(product)
   }
 
   return (
@@ -52,6 +69,12 @@ export function ProductCard({ product }: ProductCardProps) {
             >
               {copied ? 'Copiado!' : 'Copiar código'}
             </button>
+
+            {productIsInCart && (
+              <span className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+                {quantityInCart} no carrinho
+              </span>
+            )}
           </div>
 
           <h2 className="mt-3 text-base font-semibold leading-6 text-zinc-950 sm:text-lg">
@@ -65,16 +88,26 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="shrink-0 rounded-xl bg-zinc-50 p-3 text-left sm:min-w-36 sm:text-right">
-          <span className="text-xs text-zinc-500">Preço</span>
+        <div className="shrink-0 rounded-xl bg-zinc-50 p-3 text-left sm:min-w-44 sm:text-right">
+          <span className="text-xs text-zinc-500">Cartão</span>
 
           <strong className="mt-1 block text-2xl font-bold text-zinc-950">
             {formatCurrency(product.preco)}
           </strong>
+
+          <div className="mt-3 border-t border-zinc-200 pt-3">
+            <span className="text-xs text-zinc-500">
+              À vista -{cashDiscountPercentage}%
+            </span>
+
+            <strong className="mt-1 block text-lg font-bold text-green-700">
+              {formatCurrency(cashPrice)}
+            </strong>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <div className="rounded-xl bg-zinc-50 p-3">
           <span className="text-xs text-zinc-500">Estoque atual</span>
 
@@ -94,6 +127,14 @@ export function ProductCard({ product }: ProductCardProps) {
             </span>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="flex min-h-20 items-center justify-center rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 active:scale-[0.99]"
+        >
+          {productIsInCart ? 'Adicionar mais 1' : 'Adicionar ao carrinho'}
+        </button>
       </div>
     </article>
   )
