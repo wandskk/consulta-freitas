@@ -1,16 +1,27 @@
+import {
+  getOptionalEnv,
+  getOptionalNumberEnv,
+  getRequiredEnv,
+} from '@/utils/env'
+
 export const databaseConfig = {
+  driver: getOptionalEnv('DB_DRIVER', 'mysql'),
+
   mysql: {
-    host: process.env.MYSQL_HOST,
-    port: Number(process.env.MYSQL_PORT ?? 3306),
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
+    host: getOptionalEnv('MYSQL_HOST', 'localhost'),
+    port: getOptionalNumberEnv('MYSQL_PORT', 3306),
+    user: getOptionalEnv('MYSQL_USER', 'root'),
+    password: getOptionalEnv('MYSQL_PASSWORD', ''),
+    database: getRequiredEnv('MYSQL_DATABASE'),
   },
-  sqlserver: {
-    host: process.env.SQLSERVER_HOST,
-    port: Number(process.env.SQLSERVER_PORT ?? 1433),
-    user: process.env.SQLSERVER_USER,
-    password: process.env.SQLSERVER_PASSWORD,
-    database: process.env.SQLSERVER_DATABASE,
+
+  sqlServer: {
+    user: getOptionalEnv('SQLSERVER_USER', ''),
+    password: getOptionalEnv('SQLSERVER_PASSWORD', ''),
+    server: getOptionalEnv('SQLSERVER_SERVER', 'localhost'),
+    instance: getOptionalEnv('SQLSERVER_INSTANCE', ''),
+    database: getOptionalEnv('SQLSERVER_DATABASE', 'ETrade'),
+    encrypt: getOptionalEnv('SQLSERVER_ENCRYPT', 'false') === 'true',
+    trustCert: getOptionalEnv('SQLSERVER_TRUST_CERT', 'true') === 'true',
   },
-};
+}
