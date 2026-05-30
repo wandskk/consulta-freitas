@@ -1,0 +1,19 @@
+{
+  "name": "Consulta Freitas",
+  "short_name": "Freitas",
+  "description": "Consulta rápida de produtos, preços e estoque.",
+  "start_url": "/products",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f4f5",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

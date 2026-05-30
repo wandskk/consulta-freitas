@@ -1,5 +1,7 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+
+import { PwaRegister } from '@/components/pwa/pwa-register'
 
 import './globals.css'
 
@@ -16,7 +18,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Consulta Freitas',
   description:
-    'Sistema de consulta rápida de produtos, preços e estoque integrado a banco de dados local.',
+    'Sistema de consulta rápida de produtos, preços e estoque.',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Consulta Freitas',
+  },
+  icons: {
+    icon: '/icons/icon.svg',
+    apple: '/icons/icon.svg',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#09090b',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -29,6 +48,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PwaRegister />
         {children}
       </body>
     </html>
