@@ -1,5 +1,6 @@
 'use client'
 
+import { QuantityControl } from '@/components/cart/quantity-control'
 import { useCart } from '@/contexts/cart-context'
 import { calculateCashPrice } from '@/helpers/cart.helper'
 import { formatCurrency } from '@/helpers/currency.helper'
@@ -7,6 +8,13 @@ import type { CartItem } from '@/types/cart'
 
 type CartItemCardProps = {
   item: CartItem
+}
+
+function formatStock(value: number): string {
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 3,
+  }).format(value)
 }
 
 export function CartItemCard({ item }: CartItemCardProps) {
@@ -38,7 +46,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
           </span>
 
           <span className="rounded-full border border-[#ffd2c2] px-3 py-1 text-[11px] font-bold text-[#80665c]">
-            Qtd. {quantity}
+            Estoque {formatStock(product.estoque)}
           </span>
         </div>
 
@@ -54,36 +62,14 @@ export function CartItemCard({ item }: CartItemCardProps) {
       </div>
 
       <div className="grid gap-3 border-y border-[#ffd2c2] bg-[#fffaf7] p-3 sm:grid-cols-[auto_1fr] sm:items-center">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => decreaseQuantity(product.id)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#ffd2c2] bg-white text-lg font-black text-[#151515] transition hover:border-[#e43d16] hover:bg-[#fff0e8]"
-            aria-label="Diminuir quantidade"
-          >
-            -
-          </button>
-
-          <input
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(event) =>
-              updateQuantity(product.id, Number(event.target.value))
-            }
-            className="h-11 w-20 rounded-xl border border-[#ffd2c2] bg-white text-center text-sm font-black text-[#151515] outline-none focus:border-[#e43d16] focus:ring-4 focus:ring-[#e43d16]/15"
-            aria-label="Quantidade"
-          />
-
-          <button
-            type="button"
-            onClick={() => increaseQuantity(product.id)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#ffd2c2] bg-white text-lg font-black text-[#151515] transition hover:border-[#e43d16] hover:bg-[#fff0e8]"
-            aria-label="Aumentar quantidade"
-          >
-            +
-          </button>
-        </div>
+        <QuantityControl
+          quantity={quantity}
+          onDecrease={() => decreaseQuantity(product.id)}
+          onIncrease={() => increaseQuantity(product.id)}
+          onChange={(nextQuantity) =>
+            updateQuantity(product.id, nextQuantity)
+          }
+        />
 
         <div className="grid grid-cols-2 gap-2 text-sm sm:justify-self-end sm:text-right">
           <div className="rounded-xl bg-white px-3 py-2">

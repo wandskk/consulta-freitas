@@ -1,10 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-
+import { QuantityControl } from '@/components/cart/quantity-control'
 import { useCart } from '@/contexts/cart-context'
 import { calculateCashPrice } from '@/helpers/cart.helper'
-import { copyToClipboard } from '@/helpers/clipboard.helper'
 import { formatCurrency } from '@/helpers/currency.helper'
 import { getStockStatus } from '@/helpers/stock.helper'
 import type { Product } from '@/types/product'
@@ -21,13 +19,14 @@ function formatStock(value: number): string {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-    const [copied, setCopied] = useState(false)
-
     const {
         addProduct,
         cashDiscountPercentage,
         isInCart,
         getQuantity,
+        increaseQuantity,
+        decreaseQuantity,
+        updateQuantity,
     } = useCart()
 
     const stockStatus = getStockStatus(product.estoque)
@@ -35,20 +34,6 @@ export function ProductCard({ product }: ProductCardProps) {
     const cashDiscountAmount = product.preco - cashPrice
     const productIsInCart = isInCart(product.id)
     const quantityInCart = getQuantity(product.id)
-
-    async function handleCopyCode() {
-        const success = await copyToClipboard(product.codigo)
-
-        if (!success) {
-            return
-        }
-
-        setCopied(true)
-
-        setTimeout(() => {
-            setCopied(false)
-        }, 1500)
-    }
 
     function handleAddToCart() {
         addProduct(product)
@@ -64,14 +49,6 @@ export function ProductCard({ product }: ProductCardProps) {
                         <span className="rounded-full bg-[#fff0e8] px-3 py-1 text-[11px] font-black uppercase tracking-wide text-[#c82f0d]">
                             Código {product.codigo}
                         </span>
-
-                        <button
-                            type="button"
-                            onClick={handleCopyCode}
-                            className="rounded-full border border-[#ffd2c2] bg-white px-3 py-1 text-[11px] font-bold text-[#80665c] transition hover:border-[#e43d16] hover:bg-[#fff0e8] hover:text-[#c82f0d]"
-                        >
-                            {copied ? 'Copiado!' : 'Copiar código'}
-                        </button>
 
                         {productIsInCart && (
                             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
@@ -142,13 +119,26 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <div className="bg-white p-3">
-                <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#e43d16] px-4 py-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(228,61,22,0.24)] transition hover:bg-[#c82f0d] active:scale-[0.99]"
-                >
-                    {productIsInCart ? 'Adicionar mais 1' : 'Adicionar ao carrinho'}
-                </button>
+                {productIsInCart ? (
+                    <div className="flex justify-center">
+                        <QuantityControl
+                            quantity={quantityInCart}
+                            onDecrease={() => decreaseQuantity(product.id)}
+                            onIncrease={() => increaseQuantity(product.id)}
+                            onChange={(quantity) =>
+                                updateQuantity(product.id, quantity)
+                            }
+                        />
+                    </div>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#e43d16] px-4 py-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(228,61,22,0.24)] transition hover:bg-[#c82f0d] active:scale-[0.99]"
+                    >
+                        Adicionar ao carrinho
+                    </button>
+                )}
             </div>
         </article>
     )
