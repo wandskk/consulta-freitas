@@ -21,104 +21,106 @@ export function CartSummary() {
     : String(cashDiscountPercentage)
 
   return (
-    <aside className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm lg:sticky lg:top-6">
-      <div className="border-b border-zinc-100 pb-4">
-        <h2 className="text-lg font-bold text-zinc-950">Resumo</h2>
+    <aside className="overflow-hidden rounded-2xl border border-[#ffd2c2] bg-white shadow-[0_12px_28px_rgba(191,54,12,0.10)] lg:sticky lg:top-24">
+      <div className="h-1.5 bg-[#e43d16]" />
 
-        <p className="mt-1 text-sm text-zinc-500">
-          Valores calculados apenas para conferência. Não há finalização de
-          compra.
-        </p>
-      </div>
+      <div className="p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-black text-[#151515]">Resumo</h2>
 
-      <div className="space-y-4 py-4">
-        <div>
-          <label
-            htmlFor="cash-discount"
-            className="mb-2 block text-sm font-medium text-zinc-700"
-          >
-            Desconto à vista (%)
-          </label>
-
-          <input
-            id="cash-discount"
-            type="number"
-            min={0}
-            max={100}
-            value={visibleDiscountValue}
-            onFocus={() => {
-              setIsEditingDiscount(true)
-              setDiscountInputValue(String(cashDiscountPercentage))
-            }}
-            onChange={(event) => {
-              const nextValue = event.target.value
-
-              setDiscountInputValue(nextValue)
-
-              if (nextValue === '') {
-                return
-              }
-
-              updateCashDiscountPercentage(Number(nextValue))
-            }}
-            onBlur={() => {
-              setIsEditingDiscount(false)
-
-              if (discountInputValue === '') {
-                setDiscountInputValue(String(cashDiscountPercentage))
-              }
-            }}
-            className="h-11 w-full rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-200"
-          />
-
-          <p className="mt-2 text-xs text-zinc-500">
-            O padrão é 10%, mas você pode alterar. Esse valor fica salvo neste
-            dispositivo.
-          </p>
+          <span className="rounded-full bg-[#fff0e8] px-3 py-1 text-xs font-black uppercase tracking-wide text-[#c82f0d]">
+            Checkout
+          </span>
         </div>
 
-        <div className="space-y-3 rounded-xl bg-zinc-50 p-4">
+        <div className="mt-4 rounded-2xl border border-[#ffd2c2] bg-[#fff7f0] p-3">
+          <label
+            htmlFor="cash-discount"
+            className="mb-2 block text-xs font-black uppercase tracking-wide text-[#80665c]"
+          >
+            Desconto à vista
+          </label>
+
+          <div className="flex items-center gap-2">
+            <input
+              id="cash-discount"
+              type="number"
+              min={0}
+              max={100}
+              value={visibleDiscountValue}
+              onFocus={() => {
+                setIsEditingDiscount(true)
+                setDiscountInputValue(String(cashDiscountPercentage))
+              }}
+              onChange={(event) => {
+                const nextValue = event.target.value
+
+                setDiscountInputValue(nextValue)
+
+                if (nextValue === '') {
+                  return
+                }
+
+                updateCashDiscountPercentage(Number(nextValue))
+              }}
+              onBlur={() => {
+                setIsEditingDiscount(false)
+
+                if (discountInputValue === '') {
+                  setDiscountInputValue(String(cashDiscountPercentage))
+                }
+              }}
+              className="h-11 min-w-0 flex-1 rounded-xl border border-[#ffd2c2] bg-white px-3 text-sm font-black text-[#151515] outline-none focus:border-[#e43d16] focus:ring-4 focus:ring-[#e43d16]/15"
+            />
+
+            <span className="rounded-xl bg-white px-3 py-3 text-sm font-black text-[#80665c]">
+              %
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-3 rounded-2xl bg-[#fffaf7] p-4 ring-1 ring-[#ffd2c2]">
           <div className="flex items-center justify-between gap-4 text-sm">
-            <span className="text-zinc-500">Itens</span>
-            <strong className="text-zinc-950">{totals.totalItems}</strong>
+            <span className="font-bold text-[#80665c]">Itens</span>
+            <strong className="text-[#151515]">{totals.totalItems}</strong>
           </div>
 
           <div className="flex items-center justify-between gap-4 text-sm">
-            <span className="text-zinc-500">Total cartão</span>
-            <strong className="text-zinc-950">
+            <span className="font-bold text-[#80665c]">Total cartão</span>
+            <strong className="text-[#151515]">
               {formatCurrency(totals.subtotalCard)}
             </strong>
           </div>
 
           <div className="flex items-center justify-between gap-4 text-sm">
-            <span className="text-zinc-500">Desconto</span>
-            <strong className="text-green-700">
+            <span className="font-bold text-[#80665c]">Desconto</span>
+            <strong className="text-emerald-700">
               {formatCurrency(totals.discountAmount)}
             </strong>
           </div>
 
-          <div className="border-t border-zinc-200 pt-3">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-medium text-zinc-600">
+          <div className="border-t border-[#ffd2c2] pt-3">
+            <div className="flex items-end justify-between gap-4">
+              <span className="text-sm font-black text-[#151515]">
                 Total à vista
               </span>
 
-              <strong className="text-xl font-bold text-green-700">
+              <strong className="text-2xl font-black text-emerald-700">
                 {formatCurrency(totals.subtotalCash)}
               </strong>
             </div>
           </div>
         </div>
-      </div>
 
-      <button
-        type="button"
-        onClick={clearCart}
-        disabled={totals.totalItems === 0}
-        className="h-11 w-full rounded-xl border border-red-200 px-4 text-sm font-semibold text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Limpar carrinho
-      </button>
+        <button
+          type="button"
+          onClick={clearCart}
+          disabled={totals.totalItems === 0}
+          className="mt-4 h-11 w-full rounded-xl border border-red-200 bg-white px-4 text-sm font-black text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Limpar carrinho
+        </button>
+      </div>
     </aside>
   )
 }

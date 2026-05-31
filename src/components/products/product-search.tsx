@@ -22,10 +22,6 @@ export function ProductSearch({
         >
           Pesquisar produto
         </label>
-
-        <span className="rounded-full bg-[#fff0e8] px-3 py-1 text-[11px] font-black uppercase tracking-wide text-[#e43d16]">
-          Automático
-        </span>
       </div>
 
       <div className="flex gap-2">
