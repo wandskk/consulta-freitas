@@ -19,27 +19,27 @@ export function BottomCartBar() {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-200 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#ffd2c2] bg-white/95 px-3 py-3 shadow-[0_-10px_30px_rgba(191,54,12,0.14)] backdrop-blur sm:px-4">
       <div className="mx-auto flex max-w-6xl items-center gap-3">
         <div className="min-w-0 flex-1">
-          <span className="block text-xs font-medium text-zinc-500">
+          <span className="block text-xs font-black uppercase tracking-wide text-[#e43d16]">
             Carrinho
           </span>
 
           <div className="flex flex-wrap items-center gap-x-2 text-sm">
-            <strong className="text-zinc-950">
+            <strong className="text-[#151515]">
               {totals.totalItems} item{totals.totalItems === 1 ? '' : 's'}
             </strong>
 
-            <span className="text-zinc-400">•</span>
+            <span className="text-[#d7b8aa]">•</span>
 
-            <span className="font-semibold text-zinc-950">
+            <span className="font-bold text-[#151515]">
               Cartão {formatCurrency(totals.subtotalCard)}
             </span>
 
-            <span className="hidden text-zinc-400 sm:inline">•</span>
+            <span className="hidden text-[#d7b8aa] sm:inline">•</span>
 
-            <span className="hidden font-semibold text-green-700 sm:inline">
+            <span className="hidden font-bold text-emerald-700 sm:inline">
               À vista {formatCurrency(totals.subtotalCash)}
             </span>
           </div>
@@ -47,7 +47,7 @@ export function BottomCartBar() {
 
         <Link
           href="/cart"
-          className="shrink-0 rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 active:scale-[0.98]"
+          className="shrink-0 rounded-xl bg-[#e43d16] px-4 py-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(228,61,22,0.24)] transition hover:bg-[#c82f0d] active:scale-[0.98] sm:px-5"
         >
           Ver carrinho
         </Link>

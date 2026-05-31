@@ -7,7 +7,6 @@ import { ProductList } from '@/components/products/product-list'
 import { ProductSearch } from '@/components/products/product-search'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useProducts } from '@/hooks/use-products'
-import { CashDiscountControl } from '@/components/cart/cash-discount-control'
 
 export default function ProductsPage() {
   const [search, setSearch] = useState('')
@@ -39,8 +38,7 @@ export default function ProductsPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
-
+      <div className="space-y-4 sm:space-y-6">
         <ProductSearch
           value={search}
           isLoading={isLoading}

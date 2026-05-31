@@ -57,17 +57,19 @@ export function CartProvider({ children }: CartProviderProps) {
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    const storedItems = getLocalStorageItem<CartItem[]>(CART_STORAGE_KEY, [])
-    const storedDiscount = getLocalStorageItem<number>(
-      CASH_DISCOUNT_STORAGE_KEY,
-      DEFAULT_CASH_DISCOUNT_PERCENTAGE
-    )
+    queueMicrotask(() => {
+      const storedItems = getLocalStorageItem<CartItem[]>(CART_STORAGE_KEY, [])
+      const storedDiscount = getLocalStorageItem<number>(
+        CASH_DISCOUNT_STORAGE_KEY,
+        DEFAULT_CASH_DISCOUNT_PERCENTAGE
+      )
 
-    setItems(storedItems)
-    setCashDiscountPercentage(
-      normalizeCashDiscountPercentage(Number(storedDiscount))
-    )
-    setIsHydrated(true)
+      setItems(storedItems)
+      setCashDiscountPercentage(
+        normalizeCashDiscountPercentage(Number(storedDiscount))
+      )
+      setIsHydrated(true)
+    })
   }, [])
 
   useEffect(() => {
