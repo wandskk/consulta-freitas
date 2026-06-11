@@ -30,6 +30,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 .app-build.log
+.app-build.err.log
 .app-status.log
 .next-start.log
 .next-start.err.log

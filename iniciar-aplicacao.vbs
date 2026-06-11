@@ -16,6 +16,8 @@ script = script & "$AppDir = " & PowerShellQuote(appDir) & vbCrLf
 script = script & "$Port = 3000" & vbCrLf
 script = script & "$PidFile = Join-Path $AppDir '.next-start.pid'" & vbCrLf
 script = script & "$BuildLog = Join-Path $AppDir '.app-build.log'" & vbCrLf
+script = script & "$BuildErr = Join-Path $AppDir '.app-build.err.log'" & vbCrLf
+script = script & "$BuildCmd = Join-Path $env:TEMP 'consulta-freitas-build.cmd'" & vbCrLf
 script = script & "$StartLog = Join-Path $AppDir '.next-start.log'" & vbCrLf
 script = script & "$StartErr = Join-Path $AppDir '.next-start.err.log'" & vbCrLf
 script = script & "$StatusLog = Join-Path $AppDir '.app-status.log'" & vbCrLf
@@ -58,9 +60,11 @@ script = script & "    }" & vbCrLf
 script = script & "    Remove-Item -LiteralPath $PidFile -Force -ErrorAction SilentlyContinue" & vbCrLf
 script = script & "  }" & vbCrLf
 script = script & "  Write-Status 'Gerando build: npm run build'" & vbCrLf
-script = script & "  & $env:ComSpec /d /s /c """"""$Npm"""" run build > """"""$BuildLog"""" 2>&1""" & vbCrLf
+script = script & "  @('@echo off', ('cd /d ""' + $AppDir + '""'), ('call ""' + $Npm + '"" run build')) | Set-Content -LiteralPath $BuildCmd -Encoding ascii" & vbCrLf
+script = script & "  $BuildProcess = Start-Process -FilePath $env:ComSpec -ArgumentList @('/d', '/c', $BuildCmd) -WorkingDirectory $AppDir -WindowStyle Hidden -RedirectStandardOutput $BuildLog -RedirectStandardError $BuildErr -Wait -PassThru" & vbCrLf
 script = script & "  Get-Content -LiteralPath $BuildLog" & vbCrLf
-script = script & "  if ($LASTEXITCODE -ne 0) { throw ""Build falhou com codigo $LASTEXITCODE. Veja .app-build.log"" }" & vbCrLf
+script = script & "  if (Test-Path -LiteralPath $BuildErr) { Get-Content -LiteralPath $BuildErr }" & vbCrLf
+script = script & "  if ($BuildProcess.ExitCode -ne 0) { throw ""Build falhou com codigo $($BuildProcess.ExitCode). Veja .app-build.log e .app-build.err.log"" }" & vbCrLf
 script = script & "  Write-Status 'Build finalizado. Iniciando servidor oculto: npm run start'" & vbCrLf
 script = script & "  $Process = Start-Process -FilePath $Npm -ArgumentList @('run','start') -WorkingDirectory $AppDir -WindowStyle Hidden -RedirectStandardOutput $StartLog -RedirectStandardError $StartErr -PassThru" & vbCrLf
 script = script & "  $Process.Id | Set-Content -LiteralPath $PidFile -Encoding ascii" & vbCrLf
