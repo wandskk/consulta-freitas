@@ -14,6 +14,10 @@ type ProductSqlServerRow = {
   Localizacao: string | null
 }
 
+function makeNameSearchPattern(search: string): string {
+  return `%${search.replace(/\s+/g, '%')}%`
+}
+
 export class ProductSqlServerRepository implements ProductRepository {
   async findMany(params: FindProductsParams): Promise<Product[]> {
     const search = params.search.trim()
@@ -23,11 +27,19 @@ export class ProductSqlServerRepository implements ProductRepository {
       return []
     }
 
+    const searchCondition = {
+      id: 'p.Id = TRY_CONVERT(INT, @search)',
+      codigo: 'p.Codigo = @search',
+      nome: 'p.Nome LIKE @nameSearchPattern',
+    }[params.searchField]
+    const nameSearchPattern = makeNameSearchPattern(search)
+
     const pool = await getSqlServerPool()
 
     const result = await pool
       .request()
       .input('search', sql.VarChar(100), search)
+      .input('nameSearchPattern', sql.VarChar(100), nameSearchPattern)
       .input(
         'priceTableId',
         sql.UniqueIdentifier,
@@ -53,11 +65,7 @@ export class ProductSqlServerRepository implements ProductRepository {
           AND p.Inativo = 0
           AND ISNULL(p.Bloqueado, 0) = 0
           AND ISNULL(p.BloqueadoParaVenda, 0) = 0
-          AND (
-            p.Nome LIKE '%' + @search + '%'
-            OR p.Codigo LIKE '%' + @search + '%'
-            OR p.Codigo_EAN LIKE '%' + @search + '%'
-          )
+          AND ${searchCondition}
         ORDER BY p.Nome ASC;
       `)
 

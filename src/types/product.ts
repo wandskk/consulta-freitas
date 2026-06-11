@@ -8,6 +8,8 @@ export type Product = {
   localizacao: string | null
 }
 
+export type ProductSearchField = 'id' | 'codigo' | 'nome'
+
 export type ProductDatabaseRow = {
   id: number
   codigo: string
@@ -20,6 +22,7 @@ export type ProductDatabaseRow = {
 
 export type ProductSearchParams = {
   search: string
+  searchField: ProductSearchField
   limit?: number
 }
 

@@ -16,6 +16,7 @@ export class ProductService {
 
     return this.productRepository.findMany({
       search,
+      searchField: params.searchField,
       limit,
     })
   }

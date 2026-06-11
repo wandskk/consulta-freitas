@@ -11,6 +11,7 @@ export class ProductApiService {
     const searchParams = new URLSearchParams()
 
     searchParams.set('search', params.search)
+    searchParams.set('searchField', params.searchField)
 
     if (params.limit) {
       searchParams.set('limit', String(params.limit))

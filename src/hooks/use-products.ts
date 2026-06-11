@@ -3,9 +3,9 @@
 import { useCallback, useState } from 'react'
 
 import { productApiService } from '@/services/product-api.service'
-import type { Product } from '@/types/product'
+import type { Product, ProductSearchParams } from '@/types/product'
 
-type UseProductsState = {
+export type UseProductsState = {
   products: Product[]
   total: number
   isLoading: boolean
@@ -24,8 +24,8 @@ const initialState: UseProductsState = {
 export function useProducts() {
   const [state, setState] = useState<UseProductsState>(initialState)
 
-  const searchProducts = useCallback(async (search: string) => {
-    const normalizedSearch = search.trim()
+  const searchProducts = useCallback(async (params: ProductSearchParams) => {
+    const normalizedSearch = params.search.trim()
 
     if (!normalizedSearch) {
       setState(initialState)
@@ -42,6 +42,8 @@ export function useProducts() {
     try {
       const response = await productApiService.searchProducts({
         search: normalizedSearch,
+        searchField: params.searchField,
+        limit: params.limit,
       })
 
       setState({
@@ -71,9 +73,14 @@ export function useProducts() {
     setState(initialState)
   }, [])
 
+  const restoreProducts = useCallback((productsState: UseProductsState) => {
+    setState(productsState)
+  }, [])
+
   return {
     ...state,
     searchProducts,
     clearProducts,
+    restoreProducts,
   }
 }

@@ -1,7 +1,8 @@
-import type { Product } from '@/types/product'
+import type { Product, ProductSearchField } from '@/types/product'
 
 export type FindProductsParams = {
   search: string
+  searchField: ProductSearchField
   limit?: number
 }
 

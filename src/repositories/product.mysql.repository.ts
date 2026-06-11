@@ -9,6 +9,10 @@ import type { FindProductsParams, ProductRepository } from './product.repository
 
 type ProductMysqlRow = ProductDatabaseRow & RowDataPacket
 
+function makeNameSearchPattern(search: string): string {
+  return `%${search.replace(/\s+/g, '%')}%`
+}
+
 export class ProductMysqlRepository implements ProductRepository {
   async findMany(params: FindProductsParams) {
     const search = params.search.trim()
@@ -17,6 +21,25 @@ export class ProductMysqlRepository implements ProductRepository {
     if (!search) {
       return []
     }
+
+    const searchNumber = Number(search)
+    const isValidIdSearch = Number.isInteger(searchNumber)
+
+    if (params.searchField === 'id' && !isValidIdSearch) {
+      return []
+    }
+
+    const searchCondition = {
+      id: 'id = ?',
+      codigo: 'codigo = ?',
+      nome: 'nome LIKE ?',
+    }[params.searchField]
+    const searchValue =
+      params.searchField === 'id'
+        ? searchNumber
+        : params.searchField === 'nome'
+          ? makeNameSearchPattern(search)
+          : search
 
     const pool = getMysqlPool()
 
@@ -35,15 +58,11 @@ export class ProductMysqlRepository implements ProductRepository {
           inativo = 0
           AND bloqueado = 0
           AND bloqueado_para_venda = 0
-          AND (
-            nome LIKE ?
-            OR codigo LIKE ?
-            OR codigo_ean LIKE ?
-          )
+          AND ${searchCondition}
         ORDER BY nome ASC
         LIMIT ?
       `,
-      [`%${search}%`, `%${search}%`, `%${search}%`, limit]
+      [searchValue, limit]
     )
 
     return rows.map(mapProductDatabaseRowToProduct)
