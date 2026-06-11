@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "msnodesqlv8": "^5.2.0",
     "mssql": "^12.5.5",
     "mysql2": "^3.22.4",
     "next": "16.2.6",

@@ -4,6 +4,8 @@ import { makeProductRepository } from '@/repositories/product.repository.factory
 import { ProductService } from '@/services/product.service'
 import { errorResponse, successResponse } from '@/utils/api-response'
 
+export const runtime = 'nodejs'
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)

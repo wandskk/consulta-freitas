@@ -16,12 +16,18 @@ export const databaseConfig = {
   },
 
   sqlServer: {
+    authMode: getOptionalEnv('SQLSERVER_AUTH_MODE', 'sql').toLowerCase(),
     user: getOptionalEnv('SQLSERVER_USER', ''),
     password: getOptionalEnv('SQLSERVER_PASSWORD', ''),
     server: getOptionalEnv('SQLSERVER_SERVER', 'localhost'),
+    port: getOptionalNumberEnv('SQLSERVER_PORT', 1433),
     instance: getOptionalEnv('SQLSERVER_INSTANCE', ''),
     database: getOptionalEnv('SQLSERVER_DATABASE', 'ETrade'),
     encrypt: getOptionalEnv('SQLSERVER_ENCRYPT', 'false') === 'true',
-    trustCert: getOptionalEnv('SQLSERVER_TRUST_CERT', 'true') === 'true',
+    trustCert:
+      getOptionalEnv(
+        'SQLSERVER_TRUST_CERT',
+        getOptionalEnv('SQLSERVER_TRUST_SERVER_CERTIFICATE', 'true')
+      ) === 'true',
   },
 }
