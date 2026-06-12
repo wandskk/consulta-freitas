@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import { CashDiscountControl } from '@/components/cart/cash-discount-control'
 import { AppShell } from '@/components/layout/app-shell'
 import { ProductList } from '@/components/products/product-list'
 import { ProductSearch } from '@/components/products/product-search'
@@ -160,13 +161,17 @@ export default function ProductsPage() {
   return (
     <AppShell>
       <div className="space-y-4 sm:space-y-6">
-        <ProductSearch
-          value={search}
-          searchField={searchField}
-          isLoading={isLoading}
-          onChange={setSearch}
-          onSearchFieldChange={setSearchField}
-        />
+        <div className="grid gap-3 lg:grid-cols-[1fr_320px] lg:items-start">
+          <ProductSearch
+            value={search}
+            searchField={searchField}
+            isLoading={isLoading}
+            onChange={setSearch}
+            onSearchFieldChange={setSearchField}
+          />
+
+          <CashDiscountControl variant="compact" />
+        </div>
 
         <ProductList
           products={products}
