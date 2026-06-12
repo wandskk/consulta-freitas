@@ -79,7 +79,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
                         <div className="rounded-xl bg-white px-3 py-2 text-right shadow-sm">
                             <span className="text-[11px] font-black uppercase tracking-wide text-emerald-700">
-                                À vista -{cashDiscountPercentage}%
+                                À vista
                             </span>
                             <strong className="mt-1 block text-lg font-black text-emerald-700">
                                 {formatCurrency(cashPrice)}
