@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import { QuantityControl } from '@/components/cart/quantity-control'
 import { useCart } from '@/contexts/cart-context'
 import { calculateCashPrice } from '@/helpers/cart.helper'
@@ -11,6 +13,8 @@ type ProductCardProps = {
     product: Product
 }
 
+type CopyStatus = 'idle' | 'copied' | 'error'
+
 function formatStock(value: number): string {
     return new Intl.NumberFormat('pt-BR', {
         minimumFractionDigits: 0,
@@ -18,7 +22,25 @@ function formatStock(value: number): string {
     }).format(value)
 }
 
+async function copyTextToClipboard(text: string) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+        return
+    }
+
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+}
+
 export function ProductCard({ product }: ProductCardProps) {
+    const [copyStatus, setCopyStatus] = useState<CopyStatus>('idle')
     const {
         addProduct,
         cashDiscountPercentage,
@@ -37,6 +59,25 @@ export function ProductCard({ product }: ProductCardProps) {
 
     function handleAddToCart() {
         addProduct(product)
+    }
+
+    async function handleCopyProductInfo() {
+        const productInfo = [
+            `Nome do produto: ${product.nome}`,
+            `Preço no cartão: ${formatCurrency(product.preco)}`,
+            `Preço à vista: ${formatCurrency(cashPrice)}`,
+        ].join('\n')
+
+        try {
+            await copyTextToClipboard(productInfo)
+            setCopyStatus('copied')
+        } catch {
+            setCopyStatus('error')
+        }
+
+        window.setTimeout(() => {
+            setCopyStatus('idle')
+        }, 2000)
     }
 
     return (
@@ -120,7 +161,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
             <div className="bg-white p-3">
                 {productIsInCart ? (
-                    <div className="flex justify-center">
+                    <div className="grid gap-2 sm:grid-cols-[auto_1fr] sm:items-center">
                         <QuantityControl
                             quantity={quantityInCart}
                             onDecrease={() => decreaseQuantity(product.id)}
@@ -129,15 +170,41 @@ export function ProductCard({ product }: ProductCardProps) {
                                 updateQuantity(product.id, quantity)
                             }
                         />
+
+                        <button
+                            type="button"
+                            onClick={handleCopyProductInfo}
+                            className="flex min-h-12 w-full items-center justify-center rounded-xl border border-[#ffd2c2] bg-white px-4 py-3 text-sm font-black text-[#c82f0d] transition hover:border-[#e43d16] hover:bg-[#fff0e8] active:scale-[0.99]"
+                        >
+                            {copyStatus === 'copied'
+                                ? 'Copiado'
+                                : copyStatus === 'error'
+                                  ? 'Erro ao copiar'
+                                  : 'Copiar'}
+                        </button>
                     </div>
                 ) : (
-                    <button
-                        type="button"
-                        onClick={handleAddToCart}
-                        className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#e43d16] px-4 py-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(228,61,22,0.24)] transition hover:bg-[#c82f0d] active:scale-[0.99]"
-                    >
-                        Adicionar ao carrinho
-                    </button>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                        <button
+                            type="button"
+                            onClick={handleAddToCart}
+                            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#e43d16] px-4 py-3 text-sm font-black text-white shadow-[0_10px_20px_rgba(228,61,22,0.24)] transition hover:bg-[#c82f0d] active:scale-[0.99]"
+                        >
+                            Adicionar ao carrinho
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleCopyProductInfo}
+                            className="flex min-h-12 w-full items-center justify-center rounded-xl border border-[#ffd2c2] bg-white px-4 py-3 text-sm font-black text-[#c82f0d] transition hover:border-[#e43d16] hover:bg-[#fff0e8] active:scale-[0.99]"
+                        >
+                            {copyStatus === 'copied'
+                                ? 'Copiado'
+                                : copyStatus === 'error'
+                                  ? 'Erro ao copiar'
+                                  : 'Copiar'}
+                        </button>
+                    </div>
                 )}
             </div>
         </article>
