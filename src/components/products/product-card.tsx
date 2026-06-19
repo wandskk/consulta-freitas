@@ -63,7 +63,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
     async function handleCopyProductInfo() {
         const productInfo = [
-            `Nome do produto: ${product.nome}`,
+            `${product.nome}`,
             `Preço no cartão: ${formatCurrency(product.preco)}`,
             `Preço à vista: ${formatCurrency(cashPrice)}`,
         ].join('\n')
@@ -179,8 +179,8 @@ export function ProductCard({ product }: ProductCardProps) {
                             {copyStatus === 'copied'
                                 ? 'Copiado'
                                 : copyStatus === 'error'
-                                  ? 'Erro ao copiar'
-                                  : 'Copiar'}
+                                    ? 'Erro ao copiar'
+                                    : 'Copiar'}
                         </button>
                     </div>
                 ) : (
@@ -201,8 +201,8 @@ export function ProductCard({ product }: ProductCardProps) {
                             {copyStatus === 'copied'
                                 ? 'Copiado'
                                 : copyStatus === 'error'
-                                  ? 'Erro ao copiar'
-                                  : 'Copiar'}
+                                    ? 'Erro ao copiar'
+                                    : 'Copiar'}
                         </button>
                     </div>
                 )}
