@@ -403,7 +403,7 @@ Para integração real com a base da loja:
 
 * SQL Server
 * SQL Server Management Studio
-* Acesso ao banco `ETrade`
+* Acesso ao banco `banco`
 * Usuário SQL Server com permissão somente leitura
 
 ---
@@ -796,164 +796,15 @@ DB_DRIVER=sqlserver
 E configure:
 
 ```env
-SQLSERVER_USER=devwk
-SQLSERVER_PASSWORD=SENHA_DO_USUARIO
+SQLSERVER_USER=
+SQLSERVER_PASSWORD=
 SQLSERVER_SERVER=localhost
 SQLSERVER_INSTANCE=SQL2019FULL
-SQLSERVER_DATABASE=ETrade
+SQLSERVER_DATABASE=
 SQLSERVER_ENCRYPT=false
 SQLSERVER_TRUST_CERT=true
-SQLSERVER_PRICE_TABLE_ID=11627049-F321-42DE-A3ED-4101BADDBC32
+SQLSERVER_PRICE_TABLE_ID=
 ```
-
-### Tabelas usadas no SQL Server
-
-A aplicação foi preparada para consultar as tabelas:
-
-```txt
-Produto
-ProdutoPreco
-Estoque_Atual
-```
-
-### Campos principais usados
-
-Da tabela `Produto`:
-
-```txt
-Id
-Ide
-Codigo
-Nome
-Codigo_EAN
-Localizacao
-Inativo
-Bloqueado
-BloqueadoParaVenda
-```
-
-Da tabela `ProdutoPreco`:
-
-```txt
-Produto__Ide
-TabelaPreco__Ide
-Preco
-```
-
-Da tabela `Estoque_Atual`:
-
-```txt
-Produto__Ide
-Qtde
-```
-
-### Tabela de preço usada
-
-No sistema ETrade/VR Sistemas, a tabela selecionada para venda é:
-
-```txt
-Preco1
-```
-
-O identificador usado pela aplicação é:
-
-```txt
-11627049-F321-42DE-A3ED-4101BADDBC32
-```
-
----
-
-## Query base SQL Server
-
-A consulta real usada como base para produtos é semelhante a:
-
-```sql
-SELECT TOP (@limit)
-  p.Id AS id,
-  p.Codigo,
-  p.Nome,
-  p.Codigo_EAN,
-  pp.Preco,
-  ea.Qtde AS Estoque,
-  p.Localizacao
-FROM Produto p
-INNER JOIN ProdutoPreco pp
-  ON pp.Produto__Ide = p.Ide
-LEFT JOIN Estoque_Atual ea
-  ON ea.Produto__Ide = p.Ide
-WHERE
-  pp.TabelaPreco__Ide = @priceTableId
-  AND p.Inativo = 0
-  AND ISNULL(p.Bloqueado, 0) = 0
-  AND ISNULL(p.BloqueadoParaVenda, 0) = 0
-  AND (
-    p.Nome LIKE '%' + @search + '%'
-    OR p.Codigo LIKE '%' + @search + '%'
-    OR p.Codigo_EAN LIKE '%' + @search + '%'
-  )
-ORDER BY p.Nome ASC;
-```
-
----
-
-## Segurança
-
-A integração com o banco real deve utilizar um usuário com permissão somente leitura.
-
-Exemplo de criação de usuário no SQL Server:
-
-```sql
-USE master;
-GO
-
-CREATE LOGIN devwk
-WITH PASSWORD = 'SENHA_FORTE_AQUI',
-CHECK_POLICY = ON,
-CHECK_EXPIRATION = OFF;
-GO
-
-USE ETrade;
-GO
-
-CREATE USER devwk FOR LOGIN devwk;
-GO
-
-ALTER ROLE db_datareader ADD MEMBER devwk;
-GO
-```
-
-### Teste de leitura
-
-```sql
-USE ETrade;
-GO
-
-SELECT TOP 10 *
-FROM Produto;
-```
-
-### Teste de bloqueio de escrita
-
-```sql
-CREATE TABLE teste_permissao (
-  id INT
-);
-```
-
-O esperado é receber erro de permissão negada.
-
-Esse cuidado evita que a aplicação consiga executar:
-
-```txt
-INSERT
-UPDATE
-DELETE
-DROP
-CREATE
-ALTER
-```
-
-A aplicação deve trabalhar apenas com consultas `SELECT`.
 
 ---
 
