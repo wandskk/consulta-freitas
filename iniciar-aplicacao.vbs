@@ -13,7 +13,7 @@ script = ""
 script = script & "$ErrorActionPreference = 'Continue'" & vbCrLf
 script = script & "$Host.UI.RawUI.WindowTitle = 'Consulta Freitas - iniciando servidor'" & vbCrLf
 script = script & "$AppDir = " & PowerShellQuote(appDir) & vbCrLf
-script = script & "$Port = 3001" & vbCrLf
+script = script & "$Port = 3000" & vbCrLf
 script = script & "$PidFile = Join-Path $AppDir '.next-start.pid'" & vbCrLf
 script = script & "$BuildLog = Join-Path $AppDir '.app-build.log'" & vbCrLf
 script = script & "$BuildErr = Join-Path $AppDir '.app-build.err.log'" & vbCrLf
